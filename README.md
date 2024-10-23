@@ -1,3 +1,3 @@
-# RT-python-week010
+# Ray tracing final project
 
 
