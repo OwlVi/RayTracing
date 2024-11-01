@@ -11,12 +11,13 @@ import RT_texture as rtt
 pixel = 1920
 spp = 100
 mdepth = 5
+
 def renderTest():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
     main_camera.img_width = 320
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 1
+    main_camera.samples_per_pixel = 10
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(0, 0, 2)# (x rotation ,y rotation,z rotation)
@@ -29,22 +30,27 @@ def renderTest():
     main_camera.init_camera(defocus_angle, focus_distance, aperture)
     
     # Setting Material
-    tex_checker_bw = rtt.CheckerTexture(0.32, rtu.Color(.2, .2, .2), rtu.Color(.9, .9, .9))
-    mat_tex_checker_bw = rtm.TextureColor(tex_checker_bw)
     
-    point_light = rtl.Diffuse_light(rtu.Color(1,1,1))
-    metal_mat = rtm.Metal(rtu.Color(0.1,0.2,0.3),0.5)
-
+    light_red = rtl.Diffuse_light(rtu.Color(0.5,0,0))
+    light_greed = rtl.Diffuse_light(rtu.Color(0.267,0.969,0.267))
+    metal_mat = rtm.Metal(rtu.Color(0.612,0.612,0.612),0.01)
+    black = rtm.Blinn(rtu.Color(0,0,0),1,1,15)
 
 
     # add objects to the scene
     world = rts.Scene()
-    world.add_object(rto.Sphere(rtu.Vec3(   0,-100.5,-1),  100, mat_tex_checker_bw))# ground
+    # background
+    #world.add_object(rto.Quad(rtu.Vec3( -2, -2.5, -2), rtu.Vec3(4, 0, 0), rtu.Vec3(0, 10, 0),black))
     
-    world.add_object(rto.Cylinder(rtu.Vec3( 0, -0.5, 0),  0.1, 2, rtu.Vec3(0,1,0),point_light))    # center
-    world.add_object(rto.Cylinder(rtu.Vec3( 0, -1, 0),  0.12, 0.5, rtu.Vec3(0,1,0),metal_mat))    # center
+    # vCenter light same base
+    # lightsaber lEFT     
+    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.1, 3, rtu.Vec3(1,1,0),light_red))    # light
+    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.15, 0.6, rtu.Vec3(1,1,0),metal_mat))    # base
+    # lightsaber RIGHT
+    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.1, 3, rtu.Vec3(-1,1,0),light_greed))    # light
+    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.15, 0.6, rtu.Vec3(-1,1,0),metal_mat))    # base
 
-    intg = rti.Integrator(bSkyBG=True)
+    intg = rti.Integrator(bSkyBG=False)
 
     renderer = rtren.Renderer(main_camera, intg, world)
 
