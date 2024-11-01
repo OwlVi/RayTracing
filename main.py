@@ -31,9 +31,9 @@ def renderTest():
     
     # Setting Material
     
-    light_red = rtl.Diffuse_light(rtu.Color(0.5,0,0))
-    light_greed = rtl.Diffuse_light(rtu.Color(0.267,0.969,0.267))
-    metal_mat = rtm.Metal(rtu.Color(0.612,0.612,0.612),0.01)
+    light_red = rtl.SaberLight(rtu.Color(1,0.2,0.2))
+    light_greed = rtl.SaberLight(rtu.Color(0.2,1,0.2))
+    metal_mat = rtm.Metal(rtu.Color(0.612,0.612,0.612),1)
     black = rtm.Blinn(rtu.Color(0,0,0),1,1,15)
 
 
@@ -44,11 +44,11 @@ def renderTest():
     
     # vCenter light same base
     # lightsaber lEFT     
-    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.1, 3, rtu.Vec3(1,1,0),light_red))    # light
-    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.15, 0.6, rtu.Vec3(1,1,0),metal_mat))    # base
+    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.1, 3.4, rtu.Vec3(1,1,0),light_red))    # light
+    world.add_object(rto.Cylinder(rtu.Vec3( -1.5, -1, 0),  0.14, 0.8, rtu.Vec3(1,1,0),metal_mat))    # base
     # lightsaber RIGHT
-    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.1, 3, rtu.Vec3(-1,1,0),light_greed))    # light
-    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.15, 0.6, rtu.Vec3(-1,1,0),metal_mat))    # base
+    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.1, 3.4, rtu.Vec3(-1,1,0),light_greed))    # light
+    world.add_object(rto.Cylinder(rtu.Vec3( 1.5, -1, 0),  0.14, 0.8, rtu.Vec3(-1,1,0),metal_mat))    # base
 
     intg = rti.Integrator(bSkyBG=False)
 

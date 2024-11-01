@@ -167,17 +167,17 @@ class Cylinder(Object):
         c = rtu.Vec3.dot_product(oc,oc) - oc_dot_a**2 - self.radius**2
         #np.dot(oc, oc)
         # Step 3: Solve the quadratic equation for t
-        discriminant = b**2 - 4 * a * c
+        discriminant = (b*b) - (4 * a * c)
 
         if discriminant < 0:
             return None  # No intersection
 
         # Two possible solutions for t
-        t1 = (-b - np.sqrt(discriminant)) / (2 * a)
-        t2 = (-b + np.sqrt(discriminant)) / (2 * a)
+        t1 = (-b - math.sqrt(discriminant)) / (2 * a)
+        t2 = (-b + math.sqrt(discriminant)) / (2 * a)
         
         for t in [t1, t2]:
-            if t < 0:
+            if t < 0 or not cInterval.surrounds(t):
                 continue  # Ignore negative t (behind the ray origin)
 
             # Calculate intersection point
