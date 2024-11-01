@@ -5,10 +5,22 @@ import math
 
 class Object:
     def __init__(self) -> None:
-        pass
+        self.moving_center = None       # where to the sphere moves to
+        self.is_moving = False          # is it moving ?
+        self.moving_dir = None          # moving direction
+    pass
 
     def intersect(self, rRay, cInterval):
         pass
+    
+    def add_moving(self, vCenter):
+        self.moving_center = vCenter
+        self.is_moving = True
+        self.moving_dir = self.moving_center - self.center
+
+    def move_sphere(self, fTime):
+        return self.center + self.moving_dir*fTime
+
 
 class Sphere(Object):
     def __init__(self, vCenter, fRadius, mMat=None) -> None:
@@ -16,21 +28,13 @@ class Sphere(Object):
         self.center = vCenter
         self.radius = fRadius
         self.material = mMat
-        # additional parameters for motion blur
+        
         self.moving_center = None       # where to the sphere moves to
         self.is_moving = False          # is it moving ?
         self.moving_dir = None          # moving direction
 
     def add_material(self, mMat):
         self.material = mMat
-
-    def add_moving(self, vCenter):      # set an ability to move to the sphere
-        self.moving_center = vCenter
-        self.is_moving = True
-        self.moving_dir = self.moving_center - self.center
-
-    def move_sphere(self, fTime):       # move the sphere by time parameter
-        return self.center + self.moving_dir*fTime
 
     def printInfo(self):
         self.center.printout()        
@@ -147,22 +151,38 @@ class Cylinder(Object):
         self.height = cHeight
         self.axis_direction = rtu.Vec3.normalize(vAxisDirection)
         self.material = mMat
+        
+        self.moving_center = None       # where to the sphere moves to
+        self.is_moving = False          # is it moving ?
+        self.moving_dir = None          # moving direction
+    
+    def add_moving(self, vCenter):
+        self.moving_center = vCenter
+        self.is_moving = True
+        self.moving_dir = self.moving_center - self.center
 
-    def intersect(self, ray,cInterval):
+    def move_sphere(self, fTime):
+        return self.center + self.moving_dir*fTime
+      
+    def intersect(self, rRay,cInterval):
 
+        obj_center = self.center
+        if self.is_moving:
+            obj_center = self.move_sphere(rRay.getTime())
+        
         # Step 1: Define the vector from the ray origin to the cylinder center
-        oc = ray.getOrigin() - self.center
+        oc = rRay.getOrigin() - obj_center
 
         # Step 2: Calculate coefficients for quadratic equation: A*t^2 + B*t + C = 0
-        d_dot_a = rtu.Vec3.dot_product(ray.getDirection(),self.axis_direction)
+        d_dot_a = rtu.Vec3.dot_product(rRay.getDirection(),self.axis_direction)
         #np.dot(ray.getDirection(), self.axis_direction)
 
         oc_dot_a = rtu.Vec3.dot_product(oc,self.axis_direction)
         #np.dot(oc, self.axis_direction)
 
-        a = rtu.Vec3.dot_product(ray.getDirection(), ray.getDirection()) - d_dot_a**2
+        a = rtu.Vec3.dot_product(rRay.getDirection(), rRay.getDirection()) - d_dot_a**2
         #np.dot(ray.getDirection(), ray.getDirection())
-        b = 2 * (rtu.Vec3.dot_product(ray.getDirection(),oc) - d_dot_a * oc_dot_a)
+        b = 2 * (rtu.Vec3.dot_product(rRay.getDirection(),oc) - d_dot_a * oc_dot_a)
         #np.dot(ray.direction, oc)
         c = rtu.Vec3.dot_product(oc,oc) - oc_dot_a**2 - self.radius**2
         #np.dot(oc, oc)
@@ -181,7 +201,7 @@ class Cylinder(Object):
                 continue  # Ignore negative t (behind the ray origin)
 
             # Calculate intersection point
-            intersection_point = ray.getOrigin() + ray.getDirection()* t
+            intersection_point = rRay.getOrigin() + rRay.getDirection()* t
 
             # Project the intersection point onto the cylinder's axis
             height_projection = rtu.Vec3.dot_product(intersection_point - self.center, self.axis_direction)
@@ -194,7 +214,7 @@ class Cylinder(Object):
 
                 # Create hit information
                 hinfo = rtu.Hitinfo(intersection_point, hit_normal, t, self.material)
-                hinfo.set_face_normal(ray, hit_normal)
+                hinfo.set_face_normal(rRay, hit_normal)
 
                 # Optional: Set UV coordinates for texture mapping
                 u, v = self.get_uv(hit_normal)

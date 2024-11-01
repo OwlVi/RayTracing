@@ -2,6 +2,7 @@
 import random
 import RT_utility as rtu
 import RT_material as rtm
+import RT_ray as rtr
 
 class Light(rtm.Material):
     def __init__(self) -> None:
@@ -35,6 +36,6 @@ class SaberLight(Light):
         
     def emitting(self):
         return self.light_color * self.intensity
-
+    
     def scattering(self, rRayIn, hHinfo):
         return None
