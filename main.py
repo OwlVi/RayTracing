@@ -11,6 +11,46 @@ import RT_texture as rtt
 pixel = 1920
 spp = 100
 mdepth = 5
+def renderTest():
+    main_camera = rtc.Camera()
+    main_camera.aspect_ratio = 16.0/9.0
+    main_camera.img_width = 320
+    main_camera.center = rtu.Vec3(0,0,0)
+    main_camera.samples_per_pixel = 1
+    main_camera.max_depth = 5
+    main_camera.vertical_fov = 60
+    main_camera.look_from = rtu.Vec3(0, 0, 2)# (x rotation ,y rotation,z rotation)
+    main_camera.look_at = rtu.Vec3(0, 0, -1)
+    main_camera.vec_up = rtu.Vec3(0, 1, 0)
+
+    defocus_angle = 2.0
+    focus_distance = 5.0
+    aperture = 1.0
+    main_camera.init_camera(defocus_angle, focus_distance, aperture)
+    
+    # Setting Material
+    tex_checker_bw = rtt.CheckerTexture(0.32, rtu.Color(.2, .2, .2), rtu.Color(.9, .9, .9))
+    mat_tex_checker_bw = rtm.TextureColor(tex_checker_bw)
+    
+    point_light = rtl.Diffuse_light(rtu.Color(1,1,1))
+    metal_mat = rtm.Metal(rtu.Color(0.1,0.2,0.3),0.5)
+
+
+
+    # add objects to the scene
+    world = rts.Scene()
+    world.add_object(rto.Sphere(rtu.Vec3(   0,-100.5,-1),  100, mat_tex_checker_bw))# ground
+    
+    world.add_object(rto.Cylinder(rtu.Vec3( 0, -0.5, 0),  0.1, 2, rtu.Vec3(0,1,0),point_light))    # center
+    world.add_object(rto.Cylinder(rtu.Vec3( 0, -1, 0),  0.12, 0.5, rtu.Vec3(0,1,0),metal_mat))    # center
+
+    intg = rti.Integrator(bSkyBG=True)
+
+    renderer = rtren.Renderer(main_camera, intg, world)
+
+    renderer.render()
+    renderer.write_img2png('SceneTest.png')    
+
 
 def renderScene1():
     main_camera = rtc.Camera()
@@ -95,8 +135,8 @@ def renderScene2():
     renderer.write_img2png('Scene2.png')    
 
 if __name__ == "__main__":
-    
-    renderScene1()
+    renderTest()
+    #renderScene1()
     #renderScene2()
 
 

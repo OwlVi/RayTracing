@@ -56,6 +56,13 @@ class Vec3:
         tol = 1e-8
         return (math.fabs(self.e[0]) < tol) and (math.fabs(self.e[1]) < tol) and (math.fabs(self.e[2]) < tol)
 
+    def normalize(self):
+        x_nor = self.x()
+        y_nor = self.y()
+        z_nor = self.z()
+        length = math.sqrt(math.pow(x_nor,2) +math.pow(y_nor,2)  +math.pow(z_nor,2) )
+        return Vec3(x_nor / length, y_nor / length, z_nor / length)
+    
     @staticmethod
     def unit_vector(v):
         return v / v.len()

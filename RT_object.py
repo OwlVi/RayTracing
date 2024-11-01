@@ -1,4 +1,5 @@
 # object class
+import numpy as np
 import RT_utility as rtu
 import math
 
@@ -139,5 +140,86 @@ class Triangle(Object):
     def intersect(self, rRay, cInterval):
         return super().intersect(rRay, cInterval)
     
+class Cylinder(Object):
+    def __init__(self, vCenter, cRadius, cHeight, vAxisDirection,mMat=None)->None:
+        self.center = vCenter
+        self.radius = cRadius
+        self.height = cHeight
+        self.axis_direction = rtu.Vec3.normalize(vAxisDirection)
+        self.material = mMat
 
+    def intersect(self, ray,cInterval):
+
+        # Step 1: Define the vector from the ray origin to the cylinder center
+        oc = ray.getOrigin() - self.center
+
+        # Step 2: Calculate coefficients for quadratic equation: A*t^2 + B*t + C = 0
+        d_dot_a = rtu.Vec3.dot_product(ray.getDirection(),self.axis_direction)
+        #np.dot(ray.getDirection(), self.axis_direction)
+
+        oc_dot_a = rtu.Vec3.dot_product(oc,self.axis_direction)
+        #np.dot(oc, self.axis_direction)
+
+        a = rtu.Vec3.dot_product(ray.getDirection(), ray.getDirection()) - d_dot_a**2
+        #np.dot(ray.getDirection(), ray.getDirection())
+        b = 2 * (rtu.Vec3.dot_product(ray.getDirection(),oc) - d_dot_a * oc_dot_a)
+        #np.dot(ray.direction, oc)
+        c = rtu.Vec3.dot_product(oc,oc) - oc_dot_a**2 - self.radius**2
+        #np.dot(oc, oc)
+        # Step 3: Solve the quadratic equation for t
+        discriminant = b**2 - 4 * a * c
+
+        if discriminant < 0:
+            return None  # No intersection
+
+        # Two possible solutions for t
+        t1 = (-b - np.sqrt(discriminant)) / (2 * a)
+        t2 = (-b + np.sqrt(discriminant)) / (2 * a)
+        
+        for t in [t1, t2]:
+            if t < 0:
+                continue  # Ignore negative t (behind the ray origin)
+
+            # Calculate intersection point
+            intersection_point = ray.getOrigin() + ray.getDirection()* t
+
+            # Project the intersection point onto the cylinder's axis
+            height_projection = rtu.Vec3.dot_product(intersection_point - self.center, self.axis_direction)
+            if 0 <= height_projection <= self.height:
+                # Valid intersection within cylinder bounds
+
+                # Calculate the normal at the hit point
+                point_on_axis = self.center + self.axis_direction * height_projection
+                hit_normal = rtu.Vec3.normalize(intersection_point - point_on_axis)
+
+                # Create hit information
+                hinfo = rtu.Hitinfo(intersection_point, hit_normal, t, self.material)
+                hinfo.set_face_normal(ray, hit_normal)
+
+                # Optional: Set UV coordinates for texture mapping
+                u, v = self.get_uv(hit_normal)
+                hinfo.set_uv(u, v)
+
+                return hinfo
+
+        return None
     
+    def get_uv(self, vNormal):
+        # Vector from cylinder center to the point on the surface
+        point_to_center = vNormal - self.center
+
+        # Calculate 'v' coordinate (height-based)
+        v = rtu.Vec3.dot_product(point_to_center, self.axis_direction) / self.height  # normalize v to be between 0 and 1
+
+
+        # Calculate 'u' coordinate (angle-based around the cylinder)
+        theta = np.arctan2(self.radius, self.radius)
+        u = (theta + rtu.pi) / (2 * rtu.pi)  # normalize u to be between 0 and 1
+
+        return u, v
+    
+    def printInfo(self):
+        self.center.printout()
+
+    def add_material(self, mMat):
+        self.material = mMat
