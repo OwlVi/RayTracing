@@ -205,7 +205,7 @@ class Cylinder(Object):
 
             # Project the intersection point onto the cylinder's axis
             height_projection = rtu.Vec3.dot_product(intersection_point - self.center, self.axis_direction)
-            if 0 <= height_projection <= self.height:
+            if rtu.Interval(0,self.height).contains(height_projection):
                 # Valid intersection within cylinder bounds
 
                 # Calculate the normal at the hit point
@@ -243,3 +243,56 @@ class Cylinder(Object):
 
     def add_material(self, mMat):
         self.material = mMat
+    
+class Capsule(Object):
+    def __init__(self, start_point, end_point, radius, material=None):
+        self.start_point = start_point  # จุดเริ่มต้นของแคปซูล
+        self.end_point = end_point      # จุดปลายของแคปซูล
+        self.center = end_point - start_point
+        self.radius = radius            # รัศมีของแคปซูล
+        self.material = material        # วัสดุของแคปซูล
+        
+        self.moving_center = None       # where to the sphere moves to
+        self.is_moving = False          # is it moving ?
+        self.moving_dir = None          # moving direction
+    
+    def add_moving(self, vCenter):
+        self.moving_center = vCenter
+        self.is_moving = True
+        self.moving_dir = self.moving_center - self.center
+
+    def move_sphere(self, fTime):
+        return self.center + self.moving_dir*fTime
+    
+    def intersect(self, rRay, cInterval):
+        obj_center = self.end_point - self.start_point
+        if self.is_moving:
+            obj_center = self.move_sphere(rRay.getTime())
+            
+        # 1. คำนวณข้อมูลสำหรับทรงกระบอกส่วนตรงกลาง
+        cylinder_axis = obj_center
+        cylinder_length = rtu.Vec3.dot_product(obj_center,obj_center)
+        cylinder_direction = rtu.Vec3.normalize(cylinder_axis)
+
+        # แปลงทรงกระบอกกลางของแคปซูลให้เป็นวัตถุ Cylinder
+        cylinder = Cylinder(self.start_point, self.radius, cylinder_length, cylinder_direction, self.material)
+        hinfo_cylinder = cylinder.intersect(rRay, cInterval)
+
+        # 2. ตรวจจับการชนกับทรงกลมที่ปลายทั้งสองด้าน
+        sphere_start = Sphere(self.start_point, self.radius, self.material)
+        sphere_end = Sphere(self.end_point, self.radius, self.material)
+        
+        hinfo_sphere_start = sphere_start.intersect(rRay, cInterval)
+        hinfo_sphere_end = sphere_end.intersect(rRay, cInterval)
+
+        # 3. เลือกผลการชนที่ใกล้ที่สุดจากการตรวจจับทั้งหมด
+        hit_infos = [hinfo for hinfo in [hinfo_cylinder, hinfo_sphere_start, hinfo_sphere_end] if hinfo]
+        if not hit_infos:
+            return None
+
+        # ส่งคืนข้อมูลการชนที่ใกล้ที่สุด
+        closest_hit = min(hit_infos, key=lambda hinfo: hinfo.t)
+        return closest_hit
+    
+    def add_material(self, material):
+        self.material = material

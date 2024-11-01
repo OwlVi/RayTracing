@@ -57,10 +57,10 @@ def renderTest():
     world.add_object(rto.Cylinder(obj_center_right,  0.14, 0.8, obj_axit_right,metal_mat))    # base
     # Bullet
     radius_bullet = 0.1
-    bulletC_1 = rtu.Vec3( 0, -1, -2)
-    bulletA_1 = rtu.Vec3(0,1,0)
-    bullet1 = rto.Cylinder(bulletC_1,  radius_bullet, 0.06, bulletA_1,light_white)
-    bullet1.add_moving(bulletC_1 + rtu.Vec3( 0.2, 0, 0))
+    bulletC_1 = rtu.Vec3( -1, 0, 0)
+    bulletA_1 = rtu.Vec3(0,0,0)
+    bullet1 = rto.Capsule(bulletC_1,  bulletA_1, 0.06,light_white)
+    #bullet1.add_moving(bulletC_1 + rtu.Vec3( 0.2, 0, 0))
     world.add_object(bullet1)# bullet
     # Bullet
     bulletC_2 = rtu.Vec3( -2.5, 2, -2)
