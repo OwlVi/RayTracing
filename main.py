@@ -15,9 +15,9 @@ mdepth = 5
 def renderTest():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
-    main_camera.img_width = 320
+    main_camera.img_width = 480
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 10
+    main_camera.samples_per_pixel = 1
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(0, 0, 2)# (x rotation ,y rotation,z rotation)
@@ -46,28 +46,67 @@ def renderTest():
 
     # vCenter light same base
     # lightsaber lEFT
-    obj_center_left = rtu.Vec3( -1.5, -1, 0)
+    obj_center_left = rtu.Vec3( -1.5, -1, -0.5)
     obj_axit_left = rtu.Vec3(1,1,0)
-    world.add_object(rto.Cylinder(obj_center_left,  0.08, 3.4, obj_axit_left,light_red))   # light
-    world.add_object(rto.Cylinder(obj_center_left,  0.14, 0.8, obj_axit_left,metal_mat))    # base
+
     # lightsaber RIGHT
-    obj_center_right = rtu.Vec3( 1.5, -1, 0)
+    obj_center_right = rtu.Vec3( 1.5, -1, -0.5)
     obj_axit_right = rtu.Vec3(-1,1,0)
+
+    
+    # ---------------------
+    r_bullet = 0.04
+    e_bullet = 1.4
+    # Bullet 1
+    x1 = 1.75
+    y1 = -1
+    z1 = 0.2
+    bulletS_1 = rtu.Vec3(x1, y1, z1)
+    bulletE_1 = rtu.Vec3(x1-e_bullet, y1, z1)
+    bullet1 = rto.Capsule(bulletS_1,  bulletE_1, r_bullet,light_white)
+    
+    # Bullet 2
+    x2 = -2
+    y2 = -1
+    z2 = -2
+    bulletS_2 = rtu.Vec3( x2, y2, z2)
+    bulletE_2 = rtu.Vec3(x2-e_bullet, y2, z2)
+    bullet2 = rto.Capsule(bulletS_2,bulletE_2, r_bullet,light_white)
+    
+    # Bullet 3
+    x3 = 0.6
+    y3 = 0
+    z3 = -0.6
+    bulletS_3 = rtu.Vec3( x3, y3, z3)
+    bulletE_3 = rtu.Vec3(x3-e_bullet, y3, z3)
+    bullet3 = rto.Capsule(bulletS_3,bulletE_3, r_bullet,light_white)
+
+    # Bullet 4
+    x4 = -1.5
+    y4 = 1
+    z4 = -0.25
+    bulletS_4 = rtu.Vec3( x4, y4, z4)
+    bulletE_4 = rtu.Vec3(x4-e_bullet, y4, z4)
+    bullet4 = rto.Capsule(bulletS_4,bulletE_4, r_bullet,light_white)
+
+    # Bullet 5
+    x5 = 3
+    y5 = 1
+    z5 = -0.5
+    bulletS_5 = rtu.Vec3( x5, y5, z5)
+    bulletE_5 = rtu.Vec3(x5-e_bullet, y5, z5)
+    bullet5 = rto.Capsule(bulletS_5,bulletE_5, r_bullet,light_white)
+    
+    # Add to world
+    world.add_object(rto.Cylinder(obj_center_left,  0.08, 3.4, obj_axit_left,light_red))   # light
+    world.add_object(rto.Cylinder(obj_center_left,  0.14, 0.8, obj_axit_left,metal_mat))    # base    
     world.add_object(rto.Cylinder(obj_center_right,  0.08, 3.4, obj_axit_right,light_greed))    # light
     world.add_object(rto.Cylinder(obj_center_right,  0.14, 0.8, obj_axit_right,metal_mat))    # base
-    # Bullet
-    radius_bullet = 0.1
-    bulletC_1 = rtu.Vec3( -1, 0, 0)
-    bulletA_1 = rtu.Vec3(0,0,0)
-    bullet1 = rto.Capsule(bulletC_1,  bulletA_1, 0.06,light_white)
-    #bullet1.add_moving(bulletC_1 + rtu.Vec3( 0.2, 0, 0))
-    world.add_object(bullet1)# bullet
-    # Bullet
-    bulletC_2 = rtu.Vec3( -2.5, 2, -2)
-    bulletA_2 = rtu.Vec3(0,1,0)
-    bullet2 = rto.Cylinder(bulletC_2,  radius_bullet, 0.06, bulletA_2,light_white)
-    bullet2.add_moving(bulletC_2 + rtu.Vec3( 0.2, 0, 0))
-    world.add_object(bullet2)# bullet
+    world.add_object(bullet1)# bullet    
+    world.add_object(bullet2)# bullet    
+    world.add_object(bullet3)# bullet
+    world.add_object(bullet4)# bullet
+    world.add_object(bullet5)# bullet
 
 
 

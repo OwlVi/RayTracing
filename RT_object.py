@@ -265,17 +265,19 @@ class Capsule(Object):
         return self.center + self.moving_dir*fTime
     
     def intersect(self, rRay, cInterval):
-        obj_center = self.end_point - self.start_point
+        obj_center = self.center
         if self.is_moving:
             obj_center = self.move_sphere(rRay.getTime())
             
         # 1. คำนวณข้อมูลสำหรับทรงกระบอกส่วนตรงกลาง
-        cylinder_axis = obj_center
-        cylinder_length = rtu.Vec3.dot_product(obj_center,obj_center)
-        cylinder_direction = rtu.Vec3.normalize(cylinder_axis)
+        cylinder_direction = rtu.Vec3.normalize(obj_center)
+        
+        cylinder_start = self.start_point + cylinder_direction * self.radius
+        cylinder_end = self.end_point - cylinder_direction * self.radius
+        adjusted_length = math.sqrt(rtu.Vec3.dot_product(cylinder_end - cylinder_start, cylinder_end - cylinder_start))
 
         # แปลงทรงกระบอกกลางของแคปซูลให้เป็นวัตถุ Cylinder
-        cylinder = Cylinder(self.start_point, self.radius, cylinder_length, cylinder_direction, self.material)
+        cylinder = Cylinder(cylinder_start, self.radius, adjusted_length, cylinder_direction, self.material)
         hinfo_cylinder = cylinder.intersect(rRay, cInterval)
 
         # 2. ตรวจจับการชนกับทรงกลมที่ปลายทั้งสองด้าน
@@ -285,7 +287,7 @@ class Capsule(Object):
         hinfo_sphere_start = sphere_start.intersect(rRay, cInterval)
         hinfo_sphere_end = sphere_end.intersect(rRay, cInterval)
 
-        # 3. เลือกผลการชนที่ใกล้ที่สุดจากการตรวจจับทั้งหมด
+        # 3. เลือกผลการชนที่ใกล้ที่สุดจากการตรวจจับทั้งหมด , hinfo_sphere_start, hinfo_sphere_end
         hit_infos = [hinfo for hinfo in [hinfo_cylinder, hinfo_sphere_start, hinfo_sphere_end] if hinfo]
         if not hit_infos:
             return None
