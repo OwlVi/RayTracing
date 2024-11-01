@@ -15,9 +15,9 @@ mdepth = 5
 def renderTest():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
-    main_camera.img_width = 480
+    main_camera.img_width = 320
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 1
+    main_camera.samples_per_pixel = 10
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(0, 0, 2)# (x rotation ,y rotation,z rotation)
@@ -31,8 +31,8 @@ def renderTest():
     
     # Setting Material
     
-    light_red = rtl.SaberLight(rtu.Color(1,0.2,0.2))
-    light_greed = rtl.SaberLight(rtu.Color(0.2,1,0.2))
+    light_red = rtl.SaberLight(rtu.Color(1,0.15,0.15))
+    light_greed = rtl.SaberLight(rtu.Color(0.15,1,0.15))
     light_white = rtl.Diffuse_light(rtu.Color(1,1,1))
     metal_mat = rtm.Metal(rtu.Color(0.612,0.612,0.612),0.005)
     mat_blinn1 = rtm.Dielectric(rtu.Color(0.8, 0.5, 0.8),0.1)
@@ -46,7 +46,7 @@ def renderTest():
 
     # vCenter light same base
     # lightsaber lEFT
-    obj_center_left = rtu.Vec3( -1.5, -1, -0.5)
+    obj_center_left = rtu.Vec3( -1.5, -1, -0.75)
     obj_axit_left = rtu.Vec3(1,1,0)
 
     # lightsaber RIGHT
@@ -58,13 +58,13 @@ def renderTest():
     r_bullet = 0.04
     e_bullet = 1.4
     # Bullet 1
-    x1 = 1.75
+    x1 = 1
     y1 = -1
     z1 = 0.2
     bulletS_1 = rtu.Vec3(x1, y1, z1)
-    bulletE_1 = rtu.Vec3(x1-e_bullet, y1, z1)
+    bulletE_1 = rtu.Vec3(x1+e_bullet, y1, z1)
     bullet1 = rto.Capsule(bulletS_1,  bulletE_1, r_bullet,light_white)
-    
+    bullet1.add_moving(rtu.Vec3(-0.1,0,0))
     # Bullet 2
     x2 = -2
     y2 = -1
@@ -72,7 +72,7 @@ def renderTest():
     bulletS_2 = rtu.Vec3( x2, y2, z2)
     bulletE_2 = rtu.Vec3(x2-e_bullet, y2, z2)
     bullet2 = rto.Capsule(bulletS_2,bulletE_2, r_bullet,light_white)
-    
+    bullet2.add_moving(rtu.Vec3(0.1,0,0))
     # Bullet 3
     x3 = 0.6
     y3 = 0
@@ -80,7 +80,7 @@ def renderTest():
     bulletS_3 = rtu.Vec3( x3, y3, z3)
     bulletE_3 = rtu.Vec3(x3-e_bullet, y3, z3)
     bullet3 = rto.Capsule(bulletS_3,bulletE_3, r_bullet,light_white)
-
+    bullet3.add_moving(rtu.Vec3(0.1,0,0))
     # Bullet 4
     x4 = -1.5
     y4 = 1
@@ -88,14 +88,15 @@ def renderTest():
     bulletS_4 = rtu.Vec3( x4, y4, z4)
     bulletE_4 = rtu.Vec3(x4-e_bullet, y4, z4)
     bullet4 = rto.Capsule(bulletS_4,bulletE_4, r_bullet,light_white)
-
+    bullet4.add_moving(rtu.Vec3(0.1,0,0))
     # Bullet 5
-    x5 = 3
-    y5 = 1
+    x5 = 1
+    y5 = 0.75
     z5 = -0.5
     bulletS_5 = rtu.Vec3( x5, y5, z5)
-    bulletE_5 = rtu.Vec3(x5-e_bullet, y5, z5)
+    bulletE_5 = rtu.Vec3(x5+e_bullet, y5, z5)
     bullet5 = rto.Capsule(bulletS_5,bulletE_5, r_bullet,light_white)
+    bullet5.add_moving(rtu.Vec3(-0.1,0,0))
     
     # Add to world
     world.add_object(rto.Cylinder(obj_center_left,  0.08, 3.4, obj_axit_left,light_red))   # light
