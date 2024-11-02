@@ -8,8 +8,8 @@ import RT_integrator as rti
 import RT_light as rtl
 import RT_texture as rtt
 
-pixel = 1920
-spp = 100
+pixel = 320
+spp = 5
 mdepth = 5
 
 def renderTest():
@@ -108,13 +108,13 @@ def renderScene1():
     r_bullet = 0.04
     e_bullet = 1.4
     # Bullet 1
-    x1 = 1
+    x1 = 2.5
     y1 = -1
     z1 = 0.2
     bulletS_1 = rtu.Vec3(x1, y1, z1)
-    bulletE_1 = rtu.Vec3(x1+e_bullet, y1, z1)
+    bulletE_1 = rtu.Vec3(x1-e_bullet, y1, z1)
     bullet1 = rto.Capsule(bulletS_1,  bulletE_1, r_bullet,light_white)
-    bullet1.add_moving(rtu.Vec3(-0.1,0,0))
+    bullet1.add_moving(rtu.Vec3(1,0,0))
     # Bullet 2
     x2 = -2
     y2 = -1
@@ -122,7 +122,7 @@ def renderScene1():
     bulletS_2 = rtu.Vec3( x2, y2, z2)
     bulletE_2 = rtu.Vec3(x2-e_bullet, y2, z2)
     bullet2 = rto.Capsule(bulletS_2,bulletE_2, r_bullet,light_white)
-    bullet2.add_moving(rtu.Vec3(0.1,0,0))
+    bullet2.add_moving(rtu.Vec3(1,0,0))
     # Bullet 3
     x3 = 0.6
     y3 = 0
@@ -130,7 +130,7 @@ def renderScene1():
     bulletS_3 = rtu.Vec3( x3, y3, z3)
     bulletE_3 = rtu.Vec3(x3-e_bullet, y3, z3)
     bullet3 = rto.Capsule(bulletS_3,bulletE_3, r_bullet,light_white)
-    bullet3.add_moving(rtu.Vec3(0.1,0,0))
+    bullet3.add_moving(rtu.Vec3(1,0,0))
     # Bullet 4
     x4 = -1.5
     y4 = 1
@@ -138,7 +138,7 @@ def renderScene1():
     bulletS_4 = rtu.Vec3( x4, y4, z4)
     bulletE_4 = rtu.Vec3(x4+e_bullet, y4, z4)
     bullet4 = rto.Capsule(bulletS_4,bulletE_4, r_bullet,light_white)
-    bullet4.add_moving(rtu.Vec3(-0.5,0,0))
+    bullet4.add_moving(rtu.Vec3(-1,0,0))
     # Bullet 5
     x5 = 2
     y5 = 1
@@ -146,7 +146,7 @@ def renderScene1():
     bulletS_5 = rtu.Vec3( x5, y5, z5)
     bulletE_5 = rtu.Vec3(x5+e_bullet, y5, z5)
     bullet5 = rto.Capsule(bulletS_5,bulletE_5, r_bullet,light_white)
-    bullet5.add_moving(rtu.Vec3(-0.5,0,0))
+    bullet5.add_moving(rtu.Vec3(-1,0,0))
     # Bullet 6
     x6 = 0
     y6 = 0.75
@@ -154,7 +154,7 @@ def renderScene1():
     bulletS_6 = rtu.Vec3( x6, y6, z6)
     bulletE_6 = rtu.Vec3(x6+e_bullet, y6, z6)
     bullet6 = rto.Capsule(bulletS_6,bulletE_6, r_bullet,light_white)
-    bullet6.add_moving(rtu.Vec3(-0.5,0,0))
+    bullet6.add_moving(rtu.Vec3(-1,0,0))
     # Bullet 7
     x7 = -1
     y7 = 1
@@ -162,7 +162,7 @@ def renderScene1():
     bulletS_7 = rtu.Vec3( x7, y7, z7)
     bulletE_7 = rtu.Vec3(x7-e_bullet, y7, z7)
     bullet7 = rto.Capsule(bulletS_7,bulletE_7, r_bullet,light_white)
-    bullet7.add_moving(rtu.Vec3(0.5,0,0))
+    bullet7.add_moving(rtu.Vec3(1,0,0))
     
     # Add to world
     world.add_object(rto.Cylinder(obj_center_left,  0.08, 3.4, obj_axit_left,light_red))   # light
@@ -236,13 +236,12 @@ def renderScene2():
 
     renderer = rtren.Renderer(main_camera, intg, world)
 
-    renderer.render()
     renderer.render_jittered()
-    renderer.write_img2png('Scene2.png')    
+    renderer.write_img2png('Scene-2.png')    
 
 if __name__ == "__main__":
-    renderTest()
-    #renderScene1()
+    #renderTest()
+    renderScene1()
     #renderScene2()
 
 
