@@ -4,8 +4,7 @@
 - Resolution : width 3840 pixels / 1920 pixel
 - Aspect ratio : 16 : 9
 ** 2 Scene Have diff **
-
- - requirement : 
+# Requirement
     - numpy
     - Pillow
     - progressbar2
