@@ -15,9 +15,9 @@ mdepth = 5
 def renderTest():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
-    main_camera.img_width = 320
+    main_camera.img_width = pixel
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 10
+    main_camera.samples_per_pixel = spp
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(0, 0, 2)# (x rotation ,y rotation,z rotation)
