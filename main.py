@@ -8,8 +8,8 @@ import RT_integrator as rti
 import RT_light as rtl
 import RT_texture as rtt
 
-pixel = 320
-spp = 5
+pixel = 1920
+spp = 100
 mdepth = 5
 
 def renderTest():
@@ -242,6 +242,6 @@ def renderScene2():
 if __name__ == "__main__":
     #renderTest()
     renderScene1()
-    #renderScene2()
+    renderScene2()
 
 
