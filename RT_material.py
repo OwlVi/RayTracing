@@ -1,4 +1,5 @@
 # material class
+import numpy as np
 import RT_utility as rtu
 import RT_ray as rtr
 import math
@@ -127,7 +128,6 @@ class TextureColor(Material):
         attenuation_color = self.color_albedo.tex_value(hHinfo.u, hHinfo.v, hHinfo.point)
         return attenuation_color
 
-
 # A metal class with roughness parameter
 class Metal(Material):
     def __init__(self, cAlbedo, fRoughness) -> None:
@@ -184,7 +184,6 @@ class Phong(Material):
 
         return diff_color + spec_color
     
-
 # Blinn-Phong reflection model
 # fr = kd + ks*(H.N)^roughness
 class Blinn(Material):
@@ -275,5 +274,5 @@ class CookTorrance(Material):
         v_dot_H2 = v_dot_H * v_dot_H
         tan2 = ( 1 - v_dot_H2 ) / v_dot_H2
         return (chi * 2) / (1 + math.sqrt(1 + fAlpha*fAlpha*tan2))
-    
+
 
