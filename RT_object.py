@@ -5,23 +5,14 @@ import math
 
 class Object:
     def __init__(self) -> None:
+        self.moving_center = None       # where to the sphere moves to
+        self.is_moving = False          # is it moving ?
+        self.moving_dir = None          # moving direction
         pass
 
     def intersect(self, rRay, cInterval):
         pass
-
-
-class Sphere(Object):
-    def __init__(self, vCenter, fRadius, mMat=None) -> None:
-        super().__init__()
-        self.center = vCenter
-        self.radius = fRadius
-        self.material = mMat
-        
-        self.moving_center = None       # where to the sphere moves to
-        self.is_moving = False          # is it moving ?
-        self.moving_dir = None          # moving direction
-        
+    
     def add_moving(self, vCenter):
         self.moving_center = vCenter
         self.is_moving = True
@@ -29,6 +20,13 @@ class Sphere(Object):
 
     def move_sphere(self, fTime):
         return self.center + self.moving_dir*fTime
+
+class Sphere(Object):
+    def __init__(self, vCenter, fRadius, mMat=None) -> None:
+        super().__init__()
+        self.center = vCenter
+        self.radius = fRadius
+        self.material = mMat
     
     def add_material(self, mMat):
         self.material = mMat
@@ -133,7 +131,6 @@ class Quad(Object):
 
         return True
 
-
 class Triangle(Object):
     def __init__(self) -> None:
         super().__init__()
@@ -143,6 +140,7 @@ class Triangle(Object):
     
 class Cylinder(Object):
     def __init__(self, vCenter, cRadius, cHeight, vAxisDirection,mMat=None)->None:
+        super().__init__()
         self.center = vCenter
         self.radius = cRadius
         self.height = cHeight
@@ -227,42 +225,29 @@ class Cylinder(Object):
         self.material = mMat
     
 class Capsule(Object):
-    def __init__(self, vStartP, vEndP, fRadius, mMat=None):
+    def __init__(self, vStartP, vEndP, fRadius, mMat=None) -> None:
+        super().__init__()
         self.sPoint = vStartP  
         self.ePoint = vEndP      
         self.center = vEndP - vStartP
         self.radius = fRadius            
         self.material = mMat        
         
-        self.moving_center = None       # where to the sphere moves to
-        self.is_moving = False          # is it moving ?
-        self.moving_dir = None          # moving direction
-    
-    def add_moving(self, vCenter):
-        self.moving_center = vCenter
-        self.is_moving = True
-        self.moving_dir = self.moving_center - self.center
 
-    def move_sphere(self, fTime):
-        return self.center + self.moving_dir*fTime
     
     def intersect(self, rRay, cInterval):
-        obj_center = self.center
-        if self.is_moving:
-            obj_center = self.move_sphere(rRay.getTime())
-            
-        cylinder_direction = rtu.Vec3.normalize(obj_center)
-        
-        cylinder_start = self.sPoint + cylinder_direction * self.radius
-        cylinder_end = self.ePoint - cylinder_direction * self.radius
-        adjusted_length = math.sqrt(rtu.Vec3.dot_product(cylinder_end - cylinder_start, cylinder_end - cylinder_start))
 
-        cylinder = Cylinder(cylinder_start, self.radius, adjusted_length, cylinder_direction, self.material)
+            
+        cylinder_direction = rtu.Vec3.normalize(self.center)
+        adjusted_length = math.sqrt(rtu.Vec3.dot_product(self.ePoint - self.sPoint, self.ePoint - self.sPoint))
+
         sphere_start = Sphere(self.sPoint, self.radius, self.material)
+        cylinder = Cylinder(self.sPoint, self.radius, adjusted_length, cylinder_direction, self.material)
         sphere_end = Sphere(self.ePoint, self.radius, self.material)
         
         if self.is_moving:
                 sphere_start.add_moving(self.sPoint  + self.moving_center)
+                cylinder.add_moving(self.sPoint + self.moving_center)
                 sphere_end.add_moving(self.ePoint + self.moving_center)
             
             
