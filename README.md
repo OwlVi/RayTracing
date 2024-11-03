@@ -7,3 +7,7 @@
     - numpy
     - Pillow
     - progressbar2
+
+# Member
+- Piya Kongsri 6510450666
+- Krissakorn Moonkham 6510405296
